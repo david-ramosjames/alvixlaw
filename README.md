@@ -1,6 +1,6 @@
-# Alvix
+# Alvix Law
 
-One-page marketing studio website for Alvix, an independent creative company based in Austin, Texas.
+Corporate website for Alvix Law, an Austin-based marketing management services organization serving law firms.
 
 ## Run locally
 

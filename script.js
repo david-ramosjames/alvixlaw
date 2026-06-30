@@ -1,35 +1,36 @@
 const header = document.querySelector('.site-header');
-const toggle = document.querySelector('.menu-toggle');
+const menu = document.querySelector('.menu-toggle');
 
-toggle.addEventListener('click', () => {
-  const isOpen = header.classList.toggle('menu-open');
-  toggle.setAttribute('aria-expanded', String(isOpen));
-  toggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
-  document.body.style.overflow = isOpen ? 'hidden' : '';
+menu.addEventListener('click', () => {
+  const open = header.classList.toggle('open');
+  menu.setAttribute('aria-expanded', String(open));
+  menu.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  document.body.style.overflow = open ? 'hidden' : '';
 });
 
-document.querySelectorAll('nav a, .header-cta').forEach((link) => {
-  link.addEventListener('click', () => {
-    header.classList.remove('menu-open');
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-label', 'Open menu');
-    document.body.style.overflow = '';
-  });
-});
+document.querySelectorAll('nav a').forEach((link) => link.addEventListener('click', () => {
+  header.classList.remove('open');
+  menu.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+}));
+
+const items = document.querySelectorAll('.service-grid article, .timeline article, .about-content, .why-panel');
+items.forEach((item) => item.classList.add('fade-up'));
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
-      entry.target.animate(
-        [{ opacity: 0, transform: 'translateY(28px)' }, { opacity: 1, transform: 'translateY(0)' }],
-        { duration: 700, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'forwards' }
-      );
+      entry.target.classList.add('visible');
       observer.unobserve(entry.target);
     }
   });
 }, { threshold: 0.12 });
+items.forEach((item) => observer.observe(item));
 
-document.querySelectorAll('section:not(.hero) h2, .project, .service-list article, .process-steps article').forEach((el) => {
-  el.style.opacity = '0';
-  observer.observe(el);
+document.getElementById('contact-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const data = new FormData(event.currentTarget);
+  const subject = encodeURIComponent(`Website inquiry from ${data.get('firstName')} ${data.get('lastName')}`);
+  const body = encodeURIComponent(`Name: ${data.get('firstName')} ${data.get('lastName')}\nEmail: ${data.get('email')}\nOrganization: ${data.get('organization')}\n\n${data.get('message')}`);
+  window.location.href = `mailto:hello@alvixlaw.co?subject=${subject}&body=${body}`;
 });
